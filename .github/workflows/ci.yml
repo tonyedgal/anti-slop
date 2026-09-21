@@ -30,7 +30,7 @@ jobs:
       - run: pnpm test:release
       - run: pnpm check:packaging-types && pnpm lint:packaging && pnpm fmt:packaging:check && pnpm check:package
       - name: Require changesets for package and skill changes
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request' && github.head_ref != 'changeset-release/main'
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
         run: node scripts/check-changeset.mjs "$BASE_SHA"
