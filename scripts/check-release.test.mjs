@@ -40,6 +40,9 @@ test("skill-only changes require a changeset and advance the shared version", ()
     ]);
 
   git("init", "-b", "main");
+  // Changesets creates annotated tags through its own Git process.
+  git("config", "user.name", "Release Test");
+  git("config", "user.email", "test@example.invalid");
   git("add", ".");
   git("commit", "-m", "baseline");
   const base = git("rev-parse", "HEAD");
