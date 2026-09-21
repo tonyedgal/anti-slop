@@ -1,0 +1,44 @@
+name: Release
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-main
+  cancel-in-progress: false
+
+jobs:
+  release:
+    if: github.repository == 'tonyedgal/anti-slop' && github.ref == 'refs/heads/main' && vars.RELEASE_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.18.0
+          registry-url: https://registry.npmjs.org
+      - run: npm install --global npm@11.5.1
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test:release
+      - run: pnpm check && pnpm check:packaging-types && pnpm lint:packaging && pnpm fmt:packaging:check
+      - name: Publish the prepared version
+        run: pnpm release:publish
+        env:
+          RELEASE_ENABLED: ${{ vars.RELEASE_ENABLED }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: release-artifacts
+          path: .release/
+          if-no-files-found: ignore
