@@ -33,7 +33,7 @@ Expect a nonzero exit with `anti-slop/no-reflect-get` and `anti-slop/no-runtime-
 2. Run `pnpm changeset`. Include the upstream commit in the release description. Skill-only changes also need a Changeset; test-only and contributor-documentation changes do not.
 3. Commit the change and its Changeset. Push or merge both into `main`.
 4. The Release workflow creates or updates a Changesets version pull request. That pull request consumes the Changesets and updates the manifest, lockfile, and changelog.
-5. Review the version pull request and its checks. Merge it when the release is ready.
+5. Review the version pull request. The Release workflow checks the source before updating this pull request. Merge it when the release is ready.
 6. The merge starts the Release workflow again. Changesets publishes the package, pushes the matching Git tag, and creates the GitHub Release.
 
 The version pull request is the release approval. A normal push cannot publish while unconsumed Changesets exist. There is no scheduled upstream sync or automated skill archive.
