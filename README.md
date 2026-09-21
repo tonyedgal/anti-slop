@@ -1,12 +1,31 @@
-# anti-slop
+# @spacemansh/anti-slop
 
 [![skills.sh](https://skills.sh/b/dmmulroy/anti-slop)](https://skills.sh/dmmulroy/anti-slop)
 
 Opinionated Oxlint rules that reject low-evidence and low-signal TypeScript and JavaScript patterns.
 
-Anti-slop is first and foremost the ruleset I use with my work, projects, and team. It reflects my preferences and taste rather than attempting to be a universal coding standard.
+Community npm distribution of [Dillon Mulroy's anti-slop](https://github.com/dmmulroy/anti-slop), maintained by Tony Edgal. Not an official upstream package.
 
-**This project is meant to be vendored**, not treated as a fixed npm dependency. There is no official npm package. Copy the rules into your repository, read them, and change them to match your team's standards. The bundled agent skill handles the initial copy and configuration; after that, the vendored files are yours to maintain and make your own. Community-maintained forks and packages are welcome, but their compatibility and release lifecycle belong to their maintainers.
+## Quick start
+
+Requires Node 22.18.0+.
+
+```sh
+npm install --save-dev @spacemansh/anti-slop oxlint @oxlint/plugins
+```
+
+Add `oxlint.config.ts`:
+
+```ts
+import { defineConfig } from "oxlint";
+import { antiSlopConfig } from "@spacemansh/anti-slop/config";
+
+export default defineConfig(antiSlopConfig);
+```
+
+Run `npx oxlint .`. All generic rules are enabled.
+
+See the [package and configuration guide](https://github.com/tonyedgal/anti-slop/blob/main/packaging/README.md) for overrides, Effect rules, and package details.
 
 ## Install with an agent skill
 

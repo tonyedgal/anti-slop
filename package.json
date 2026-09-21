@@ -1,14 +1,74 @@
 {
-  "name": "oxlint-plugin-anti-slop",
-  "version": "0.1.2",
-  "private": true,
+  "name": "@spacemansh/anti-slop",
+  "version": "0.2.0",
   "description": "Opinionated Oxlint rules that reject low-evidence TypeScript and JavaScript patterns.",
-  "type": "module",
-  "exports": "./src/index.ts",
-  "files": [
-    "src"
+  "keywords": [
+    "lint",
+    "oxc",
+    "oxlint",
+    "typescript"
   ],
+  "homepage": "https://github.com/tonyedgal/anti-slop#readme",
+  "bugs": {
+    "url": "https://github.com/tonyedgal/anti-slop/issues"
+  },
+  "license": "MIT",
+  "author": "Tony Edgal (https://github.com/tonyedgal)",
+  "contributors": [
+    {
+      "name": "Tony Edgal",
+      "url": "https://github.com/tonyedgal"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tonyedgal/anti-slop.git"
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "docs/UPSTREAM.md",
+    "docs/RELEASING.md",
+    "packaging/README.md",
+    "src/vendor/eslint-stylistic/LICENSE",
+    "src/vendor/eslint-stylistic/UPSTREAM.md"
+  ],
+  "type": "module",
+  "main": "./dist/index.mjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.mts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs",
+      "default": "./dist/index.mjs"
+    },
+    "./effect": {
+      "types": "./dist/effect/index.d.mts",
+      "import": "./dist/effect/index.mjs",
+      "default": "./dist/effect/index.mjs"
+    },
+    "./config": {
+      "types": "./dist/config.d.mts",
+      "import": "./dist/config.mjs",
+      "default": "./dist/config.mjs"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
+    "build": "tsdown",
+    "prepack": "pnpm build",
+    "check:package": "node scripts/check-package.mjs",
+    "test:release": "node --test scripts/check-release.test.mjs",
+    "check:packaging-types": "tsc -p tsconfig.packaging.json",
+    "lint:packaging": "oxlint --config packaging/oxlint.config.ts packaging scripts/check-package.mjs scripts/check-changeset.mjs scripts/check-release.test.mjs scripts/publish-package.mjs tsdown.config.ts",
+    "release:publish": "node scripts/publish-package.mjs",
+    "fmt:packaging": "oxfmt packaging scripts/check-package.mjs scripts/check-changeset.mjs scripts/check-release.test.mjs scripts/publish-package.mjs tsdown.config.ts tsconfig.build.json tsconfig.packaging.json package.json .changeset .github/workflows",
+    "fmt:packaging:check": "pnpm fmt:packaging --check",
+    "changeset": "changeset",
+    "version-packages": "changeset version && pnpm install --lockfile-only",
     "check": "pnpm lint && pnpm test && pnpm typecheck && pnpm check:skill-assets",
     "lint": "oxlint src",
     "test": "tsx src/rules/require-readable-spacing.test.ts && tsx src/rules/require-readable-spacing-cli.test.ts && tsx src/rules/no-array-filter-map.test.ts && tsx src/rules/no-reduce-accumulator-copy.test.ts && tsx src/rules/no-chained-type-assertions.test.ts && tsx src/rules/no-conditional-empty-object-spread.test.ts && tsx src/rules/no-unsafe-dictionary-type.test.ts && tsx src/rules/no-known-value-widening.test.ts && tsx src/rules/no-object-parameters.test.ts && tsx src/rules/no-unknown-parameters.test.ts && tsx src/rules/no-runtime-typeof.test.ts && tsx src/rules/no-shape-in-symbol-names.test.ts && tsx src/rules/no-unknown-returns.test.ts && tsx src/rules/no-unknown-type-aliases.test.ts && tsx src/rules/no-widen-then-assert.test.ts && tsx src/rules/no-reflect-get.test.ts && tsx src/rules/no-reflect-apply.test.ts && tsx src/rules/no-module-mocking.test.ts && tsx src/rules/require-safety-comment-for-type-assertion.test.ts && tsx src/effect/rules/no-service-constructor-imports.test.ts && tsx src/effect/rules/no-manual-tag-comparison.test.ts && tsx src/effect/rules/no-manual-effect-error-tag.test.ts && tsx src/effect/rules/no-manual-tagged-construction.test.ts && tsx src/effect/rules/prefer-effect-match.test.ts",
@@ -16,15 +76,22 @@
     "sync:skill-assets": "node scripts/sync-skill-assets.mjs",
     "check:skill-assets": "node scripts/sync-skill-assets.mjs --check"
   },
-  "dependencies": {
-    "@oxlint/plugins": "1.78.0"
-  },
   "devDependencies": {
+    "@changesets/cli": "3.0.3",
+    "@oxlint/plugins": "1.78.0",
     "@types/node": "26.2.0",
+    "oxfmt": "0.68.0",
     "oxlint": "1.78.0",
+    "tsdown": "0.23.0",
     "tsx": "4.23.12",
     "typescript": "7.0.2"
   },
-  "packageManager": "pnpm@10.33.0",
-  "license": "MIT"
+  "peerDependencies": {
+    "@oxlint/plugins": "*",
+    "oxlint": "*"
+  },
+  "engines": {
+    "node": ">=22.18.0"
+  },
+  "packageManager": "pnpm@10.33.0"
 }
