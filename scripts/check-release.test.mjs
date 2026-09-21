@@ -65,7 +65,7 @@ test("skill-only changes require a changeset and advance the shared version", ()
   git("commit", "-m", "release");
   run(cwd, join(root, "node_modules/.bin/changeset"), ["git-tag"]);
   const tag = git("tag", "--list");
-  assert.match(tag, /0\.1\.3$/);
+  assert.equal(tag, "v0.1.3");
   assert.equal(git("show", `${tag}:skills/SKILL.md`), "Updated skill");
 });
 
@@ -99,9 +99,8 @@ test("publication refuses local and other repository execution before running co
       env: {
         ...process.env,
         GITHUB_REPOSITORY: repository,
-        GITHUB_EVENT_NAME: "workflow_dispatch",
+        GITHUB_EVENT_NAME: "push",
         GITHUB_REF: "refs/heads/main",
-        RELEASE_ENABLED: "true",
       },
     });
 

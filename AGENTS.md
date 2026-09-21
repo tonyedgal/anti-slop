@@ -10,5 +10,5 @@
 - Use the repository's anti-slop skill guidance and run `pnpm lint:packaging` on new implementation code. Do not weaken rules to make packaging pass.
 - Run `pnpm check:packaging-types` and `pnpm check:package` for package changes. The latter tests an actual tarball in isolated consumers without publishing.
 - Add an `@spacemansh/anti-slop` changeset for shipped package or skill changes. Preserve skill distribution and upstream rule behavior.
-- Tony maintains this community npm distribution. Publish only through the manually started release workflow after activation.
+- Tony maintains this community npm distribution. Publish only by merging the Changesets version pull request.
 - Merge updates only from upstream main. Follow docs/UPSTREAM.md and preserve upstream licenses, rules, and skill behavior.

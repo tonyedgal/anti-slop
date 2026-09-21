@@ -4,18 +4,16 @@ import { createHash } from "node:crypto";
 import { readFileSync, readdirSync } from "node:fs";
 import { resolve } from "node:path";
 
-// Only the maintainer's manually started release job can publish.
+// Only the release action on the fork's main branch can publish.
 assert.equal(process.env.GITHUB_REPOSITORY, "tonyedgal/anti-slop");
 
-assert.equal(process.env.GITHUB_EVENT_NAME, "workflow_dispatch");
+assert.equal(process.env.GITHUB_EVENT_NAME, "push");
 
 assert.equal(process.env.GITHUB_REF, "refs/heads/main");
 
-assert.equal(process.env.RELEASE_ENABLED, "true");
-
 assert(
   !readdirSync(".changeset").some((file) => file.endsWith(".md") && file !== "README.md"),
-  "Run pnpm version-packages and commit the release before publishing.",
+  "Merge the Changesets version pull request before publishing.",
 );
 
 function run(command, args) {
@@ -49,4 +47,4 @@ for (const group of packed.plan) {
 }
 
 // Publish the already-tested bytes using the version and tag in the packed plan.
-run("pnpm", ["exec", "changeset", "publish", "--from-pack-dir", ".release/packed", "--no-git-tag"]);
+run("pnpm", ["exec", "changeset", "publish", "--from-pack-dir", ".release/packed"]);

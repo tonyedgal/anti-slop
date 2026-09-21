@@ -1,10 +1,13 @@
 name: Release
 
 on:
-  workflow_dispatch:
+  push:
+    branches: [main]
 
 permissions:
-  contents: read
+  contents: write
+  pull-requests: write
+  id-token: write
 
 concurrency:
   group: release-main
@@ -12,10 +15,11 @@ concurrency:
 
 jobs:
   release:
-    if: github.repository == 'tonyedgal/anti-slop' && github.ref == 'refs/heads/main' && vars.RELEASE_ENABLED == 'true'
+    if: github.repository == 'tonyedgal/anti-slop'
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
+      pull-requests: write
       id-token: write
     steps:
       - uses: actions/checkout@v4
@@ -32,10 +36,15 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm test:release
       - run: pnpm check && pnpm check:packaging-types && pnpm lint:packaging && pnpm fmt:packaging:check
-      - name: Publish the prepared version
-        run: pnpm release:publish
-        env:
-          RELEASE_ENABLED: ${{ vars.RELEASE_ENABLED }}
+      - name: Create release pull request or publish to npm
+        uses: changesets/action@v2.0.0-next.3
+        with:
+          publish-script: pnpm release:publish
+          version-script: pnpm version-packages
+          commit-message: "chore: version packages"
+          pr-title: "chore: version packages"
+          create-github-releases: true
+          push-git-tags: true
       - uses: actions/upload-artifact@v4
         if: always()
         with:

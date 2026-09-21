@@ -29,7 +29,7 @@ git merge --no-ff --no-commit upstream/main
 
 Only upstream main is merged. Unmerged upstream branches are not imported. The merge stops before a commit so the maintainer can review it.
 
-Resolve conflicts explicitly. Preserve this fork's package name, maintainer metadata, exports, version, and manual release workflow. Review upstream dependency and workflow changes rather than overwriting either side wholesale. Regenerate the pnpm lockfile after resolving dependency changes.
+Resolve conflicts explicitly. Preserve this fork's package name, maintainer metadata, exports, version, and Changesets release workflow. Review upstream dependency and workflow changes rather than overwriting either side wholesale. Regenerate the pnpm lockfile after resolving dependency changes.
 
 Review new or removed rule exports and update the explicit defaults in `packaging/config.ts`. Update package inventory assertions when the upstream rule count changes. Newly enabled defaults are breaking changes. Keep Oxlint and its helper pinned to the same tested version.
 
