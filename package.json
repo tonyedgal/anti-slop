@@ -1,8 +1,9 @@
 {
   "name": "@spacemansh/anti-slop",
   "version": "0.2.0",
-  "description": "Opinionated Oxlint rules that reject low-evidence TypeScript and JavaScript patterns.",
+  "description": "Opinionated Oxlint and ESLint rules that reject low-evidence TypeScript and JavaScript patterns.",
   "keywords": [
+    "eslint",
     "lint",
     "oxc",
     "oxlint",
@@ -29,6 +30,7 @@
     "LICENSE",
     "docs/UPSTREAM.md",
     "docs/RELEASING.md",
+    "docs/ESLINT.md",
     "packaging/README.md",
     "src/vendor/eslint-stylistic/LICENSE",
     "src/vendor/eslint-stylistic/UPSTREAM.md"
@@ -52,20 +54,30 @@
       "types": "./dist/config.d.mts",
       "import": "./dist/config.mjs",
       "default": "./dist/config.mjs"
+    },
+    "./eslint": {
+      "types": "./dist/eslint/index.d.mts",
+      "import": "./dist/eslint/index.mjs",
+      "default": "./dist/eslint/index.mjs"
+    },
+    "./eslint/effect": {
+      "types": "./dist/eslint/effect.d.mts",
+      "import": "./dist/eslint/effect.mjs",
+      "default": "./dist/eslint/effect.mjs"
     }
   },
   "publishConfig": {
     "access": "public"
   },
   "scripts": {
-    "build": "tsdown",
+    "build": "tsdown && tsdown --config tsdown.eslint.config.ts",
     "prepack": "pnpm build",
     "check:package": "node scripts/check-package.mjs",
     "test:release": "node --test scripts/check-release.test.mjs",
-    "check:packaging-types": "tsc -p tsconfig.packaging.json",
-    "lint:packaging": "oxlint --config packaging/oxlint.config.ts packaging scripts/check-package.mjs scripts/check-changeset.mjs scripts/check-release.test.mjs scripts/publish-package.mjs tsdown.config.ts",
+    "check:packaging-types": "tsc -p tsconfig.packaging.json && tsc -p tsconfig.build.json",
+    "lint:packaging": "oxlint --config packaging/oxlint.config.ts packaging scripts/check-package.mjs scripts/check-changeset.mjs scripts/check-release.test.mjs scripts/publish-package.mjs tsdown.config.ts tsdown.eslint.config.ts",
     "release:publish": "node scripts/publish-package.mjs",
-    "fmt:packaging": "oxfmt packaging scripts/check-package.mjs scripts/check-changeset.mjs scripts/check-release.test.mjs scripts/publish-package.mjs tsdown.config.ts tsconfig.build.json tsconfig.packaging.json package.json .changeset .github/workflows",
+    "fmt:packaging": "oxfmt packaging scripts/check-package.mjs scripts/check-changeset.mjs scripts/check-release.test.mjs scripts/publish-package.mjs tsdown.config.ts tsdown.eslint.config.ts tsconfig.build.json tsconfig.packaging.json package.json .changeset .github/workflows",
     "fmt:packaging:check": "pnpm fmt:packaging --check",
     "changeset": "changeset",
     "version-packages": "changeset version && pnpm install --lockfile-only",
@@ -80,6 +92,7 @@
     "@changesets/cli": "3.0.3",
     "@oxlint/plugins": "1.78.0",
     "@types/node": "26.2.0",
+    "eslint": "10.11.0",
     "oxfmt": "0.68.0",
     "oxlint": "1.78.0",
     "tsdown": "0.23.0",
@@ -88,7 +101,19 @@
   },
   "peerDependencies": {
     "@oxlint/plugins": "*",
+    "eslint": ">=9.0.0",
     "oxlint": "*"
+  },
+  "peerDependenciesMeta": {
+    "@oxlint/plugins": {
+      "optional": true
+    },
+    "eslint": {
+      "optional": true
+    },
+    "oxlint": {
+      "optional": true
+    }
   },
   "engines": {
     "node": ">=22.18.0"

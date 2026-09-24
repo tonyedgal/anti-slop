@@ -5,5 +5,5 @@
     "noImplicitOverride": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["packaging/**/*.ts", "tsdown.config.ts"]
+  "include": ["packaging/config.ts", "tsdown.config.ts", "tsdown.eslint.config.ts"]
 }
