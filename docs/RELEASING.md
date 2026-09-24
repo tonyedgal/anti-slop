@@ -16,7 +16,7 @@ pnpm test:release
 pnpm check:package
 ```
 
-The package check builds a tarball and tests isolated npm and pnpm consumers. It checks exports, configurations, rule overrides, Effect composition, fixes, and declarations. It does not publish. It retains the tarball and checksum in `.release/`.
+The package check builds a tarball and tests isolated npm and pnpm consumers. It checks exports, configurations, rule overrides, Effect composition, fixes, and declarations. It also checks typed ESLint configs with ESLint 9 and 10. It does not publish. It retains the tarball and checksum in `.release/`.
 
 For a small manual check of the built plugin:
 

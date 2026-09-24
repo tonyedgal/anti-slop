@@ -2,7 +2,7 @@
 
 This is Tony Edgal's community npm distribution of [Dillon Mulroy's anti-slop](https://github.com/dmmulroy/anti-slop). Tony maintains package compatibility and releases. It is not an official upstream npm package.
 
-Upstream recommends vendoring so teams can change and maintain their own rules. This fork adds npm installation without changing the source rules or bundled skill. Original copyright and licence notices remain intact. See [source provenance](../docs/UPSTREAM.md) for the source commit and update procedure.
+Upstream recommends vendoring so teams can change and maintain their own rules. This fork adds npm installation. See [source provenance](../docs/UPSTREAM.md) for the source commit and update procedure.
 
 ## Install and enable
 
@@ -68,7 +68,12 @@ The optional Effect specifier is `@spacemansh/anti-slop/effect`. Registering a p
 - `.release/spacemansh-anti-slop-<version>.tgz`: local tarball produced by `pnpm check:package`.
 - `node_modules/@spacemansh/anti-slop/`: installed package in a consuming project. No rule files are copied into the project's source.
 
-The package exports `@spacemansh/anti-slop`, `@spacemansh/anti-slop/effect`, and `@spacemansh/anti-slop/config` from `dist/`. The tarball also includes package metadata, documentation, the root licence, and the ESLint Stylistic licence and provenance. Tests and skill assets are not included.
+The package exports `@spacemansh/anti-slop`, `@spacemansh/anti-slop/effect`,
+`@spacemansh/anti-slop/config`, `@spacemansh/anti-slop/eslint`, and
+`@spacemansh/anti-slop/eslint/effect` from `dist/`. The [ESLint guide](../docs/ESLINT.md)
+shows the ESLint-only installation. The tarball also includes package metadata,
+documentation, the root licence, and the ESLint Stylistic licence and provenance.
+Tests and skill assets are not included.
 
 ## Local testing and releases
 
