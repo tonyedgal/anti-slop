@@ -2,17 +2,23 @@
 
 [![skills.sh](https://skills.sh/b/dmmulroy/anti-slop)](https://skills.sh/dmmulroy/anti-slop)
 
-Opinionated Oxlint rules that reject low-evidence and low-signal TypeScript and JavaScript patterns.
+Opinionated rules for Oxlint and ESLint that reject low-evidence and low-signal TypeScript and JavaScript patterns.
 
 Community npm distribution of [Dillon Mulroy's anti-slop](https://github.com/dmmulroy/anti-slop), maintained by Tony Edgal. Not an official upstream package.
 
 ## Quick start
 
-Requires Node 22.18.0+.
+Requires Node 22.18.0+. Install the package with the linter you use:
 
-```sh
+```bash
+# Oxlint
 npm install --save-dev @spacemansh/anti-slop oxlint @oxlint/plugins
+
+# ESLint
+npm install --save-dev @spacemansh/anti-slop eslint @typescript-eslint/parser
 ```
+
+## Oxlint
 
 Add `oxlint.config.ts`:
 
@@ -26,6 +32,9 @@ export default defineConfig(antiSlopConfig);
 Run `npx oxlint .`. All generic rules are enabled.
 
 See the [package and configuration guide](https://github.com/tonyedgal/anti-slop/blob/main/packaging/README.md) for overrides, Effect rules, and package details.
+
+For ESLint, see the [ESLint package guide](docs/ESLINT.md). Effect rules remain
+opt-in.
 
 ## Install with an agent skill
 
