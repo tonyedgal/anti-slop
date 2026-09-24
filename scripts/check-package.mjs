@@ -49,9 +49,12 @@ for (const path of [
   "dist/index.mjs",
   "dist/effect/index.mjs",
   "dist/config.mjs",
+  "dist/eslint/index.mjs",
+  "dist/eslint/effect.mjs",
   "LICENSE",
   "docs/UPSTREAM.md",
   "docs/RELEASING.md",
+  "docs/ESLINT.md",
   "packaging/README.md",
   "src/vendor/eslint-stylistic/LICENSE",
   "src/vendor/eslint-stylistic/UPSTREAM.md",
@@ -219,6 +222,168 @@ void effect.rules;\n`,
 
   console.log(`${manager} consumer passed: ${consumer}`);
 }
+
+const eslintConsumer = mkdtempSync(join(tmpdir(), "anti-slop-eslint-"));
+
+writeFileSync(
+  join(eslintConsumer, "package.json"),
+  JSON.stringify({ private: true, type: "module" }),
+);
+
+run(
+  "pnpm",
+  [
+    "add",
+    "-D",
+    "--strict-peer-dependencies",
+    tarball,
+    "eslint@9.39.4",
+    "@typescript-eslint/parser@8.59.4",
+    "typescript@5.8.3",
+  ],
+  eslintConsumer,
+);
+
+writeFileSync(
+  join(eslintConsumer, "eslint-check.mjs"),
+  `import assert from "node:assert/strict";
+import { ESLint } from "eslint";
+import tsParser from "@typescript-eslint/parser";
+import generic, { all as genericAll } from "@spacemansh/anti-slop/eslint";
+import effect, { all as effectAll } from "@spacemansh/anti-slop/eslint/effect";
+
+assert.equal(Object.keys(generic.rules).length, 18);
+assert.equal(Object.keys(effect.rules).length, 5);
+assert.equal(Object.keys(genericAll.rules).length, 18);
+assert.equal(Object.keys(effectAll.rules).length, 5);
+assert.deepEqual(Object.keys(generic.configs.all.rules), Object.keys(genericAll.rules));
+assert.deepEqual(Object.keys(effect.configs.all.rules), Object.keys(effectAll.rules));
+assert(Object.values({ ...genericAll.rules, ...effectAll.rules }).every(value => value === "error"));
+
+const eslint = new ESLint({ overrideConfigFile: true, overrideConfig: [{
+  files: ["**/*.ts"],
+  languageOptions: { parser: tsParser },
+  plugins: { ...genericAll.plugins, ...effectAll.plugins },
+  rules: { ...genericAll.rules, ...effectAll.rules },
+}] });
+const [result] = await eslint.lintText('export const value = Reflect.get({}, "value");\\nexport const tagged = { _tag: "Item" };\\n', { filePath: "example.ts" });
+assert(result.messages.some(message => message.ruleId === "anti-slop/no-reflect-get"));
+assert(result.messages.some(message => message.ruleId === "anti-slop-effect/no-manual-tagged-construction"));
+assert(!result.messages.some(message => message.fatal));
+
+const disabled = new ESLint({ overrideConfigFile: true, overrideConfig: [{
+  files: ["**/*.ts"],
+  languageOptions: { parser: tsParser },
+  ...genericAll,
+  rules: { ...genericAll.rules, "anti-slop/no-reflect-get": "off" },
+}] });
+const [disabledResult] = await disabled.lintText('export const value = Reflect.get({}, "value");\\n', { filePath: "example.ts" });
+assert(!disabledResult.messages.some(message => message.ruleId === "anti-slop/no-reflect-get"));
+`,
+);
+
+run(process.execPath, ["eslint-check.mjs"], eslintConsumer);
+
+writeFileSync(
+  join(eslintConsumer, "consumer.mts"),
+  `import { defineConfig } from "eslint/config";
+import tsParser from "@typescript-eslint/parser";
+import generic, { all as genericAll } from "@spacemansh/anti-slop/eslint";
+import effect, { all as effectAll } from "@spacemansh/anti-slop/eslint/effect";
+
+defineConfig({ files: ["**/*.ts"], languageOptions: { parser: tsParser }, ...genericAll });
+defineConfig({
+  files: ["**/*.ts"],
+  languageOptions: { parser: tsParser },
+  plugins: { ...genericAll.plugins, ...effectAll.plugins },
+  rules: { ...genericAll.rules, ...effectAll.rules },
+});
+defineConfig(generic.configs.all);
+defineConfig(effect.configs.all);
+
+void generic.rules;
+void effect.rules;
+void genericAll.rules;
+void effectAll.rules;
+`,
+);
+
+run(
+  join(eslintConsumer, "node_modules/.bin/tsc"),
+  [
+    "--noEmit",
+    "--strict",
+    "--skipLibCheck",
+    "false",
+    "--target",
+    "ES2022",
+    "--module",
+    "NodeNext",
+    "--moduleResolution",
+    "NodeNext",
+    "consumer.mts",
+  ],
+  eslintConsumer,
+);
+
+console.log(`ESLint-only consumer passed: ${eslintConsumer}`);
+
+const eslint10Consumer = mkdtempSync(join(tmpdir(), "anti-slop-eslint10-"));
+
+writeFileSync(
+  join(eslint10Consumer, "package.json"),
+  JSON.stringify({ private: true, type: "module" }),
+);
+
+run(
+  "pnpm",
+  [
+    "add",
+    "-D",
+    "--strict-peer-dependencies",
+    tarball,
+    "eslint@10.11.0",
+    "@typescript-eslint/parser@8.70.1",
+    "typescript@5.8.3",
+  ],
+  eslint10Consumer,
+);
+
+writeFileSync(
+  join(eslint10Consumer, "consumer.mts"),
+  `import { defineConfig } from "eslint/config";
+import generic, { all as genericAll } from "@spacemansh/anti-slop/eslint";
+import effect, { all as effectAll } from "@spacemansh/anti-slop/eslint/effect";
+
+defineConfig(genericAll);
+defineConfig(generic.configs.all);
+defineConfig(effect.configs.all);
+defineConfig({
+  plugins: { ...genericAll.plugins, ...effectAll.plugins },
+  rules: { ...genericAll.rules, ...effectAll.rules },
+});
+`,
+);
+
+run(
+  join(eslint10Consumer, "node_modules/.bin/tsc"),
+  [
+    "--noEmit",
+    "--strict",
+    "--skipLibCheck",
+    "false",
+    "--target",
+    "ES2022",
+    "--module",
+    "NodeNext",
+    "--moduleResolution",
+    "NodeNext",
+    "consumer.mts",
+  ],
+  eslint10Consumer,
+);
+
+console.log(`ESLint 10 typed consumer passed: ${eslint10Consumer}`);
 
 const checksum = createHash("sha256").update(readFileSync(tarball)).digest("hex");
 

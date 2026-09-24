@@ -92,6 +92,30 @@ test("contributor documentation alone does not require a release", () => {
   run(cwd, process.execPath, [join(root, "scripts/check-changeset.mjs"), base]);
 });
 
+test("ESLint adapter changes require a changeset", () => {
+  const cwd = mkdtempSync(join(tmpdir(), "anti-slop-eslint-release-"));
+  mkdirSync(join(cwd, "packaging/eslint"), { recursive: true });
+
+  const git = (...args) =>
+    run(cwd, "git", [
+      "-c",
+      "user.name=Release Test",
+      "-c",
+      "user.email=test@example.invalid",
+      ...args,
+    ]);
+
+  git("init", "-b", "main");
+  writeFileSync(join(cwd, "packaging/eslint/index.ts"), "Original adapter\n");
+  git("add", ".");
+  git("commit", "-m", "baseline");
+  const base = git("rev-parse", "HEAD");
+  writeFileSync(join(cwd, "packaging/eslint/index.ts"), "Updated adapter\n");
+  git("add", ".");
+  git("commit", "-m", "update ESLint adapter");
+  run(cwd, process.execPath, [join(root, "scripts/check-changeset.mjs"), base], 1);
+});
+
 test("publication refuses local and other repository execution before running commands", () => {
   for (const repository of ["", "example/anti-slop"]) {
     const result = spawnSync(process.execPath, [join(root, "scripts/publish-package.mjs")], {

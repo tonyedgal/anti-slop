@@ -16,7 +16,7 @@ const paths = diff.stdout.trim().split("\n");
 
 const shipped = paths.some(
   (path) =>
-    /^(src\/|packaging\/(config\.ts|README\.md)$|skills\/|README\.md$|docs\/(UPSTREAM|RELEASING)\.md$|LICENSE$|package\.json$|pnpm-lock\.yaml$|tsdown\.config\.ts$|tsconfig\.build\.json$)/.test(
+    /^(src\/|packaging\/(eslint\/|config\.ts$|README\.md$)|skills\/|README\.md$|docs\/(UPSTREAM|RELEASING|ESLINT)\.md$|LICENSE$|package\.json$|pnpm-lock\.yaml$|tsdown(\.eslint)?\.config\.ts$|tsconfig\.(build|packaging)\.json$)/.test(
       path,
     ) && !path.endsWith(".test.ts"),
 );
