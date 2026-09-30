@@ -1,4 +1,13 @@
-# @spacemansh/anti-slop
+# antislop-plugin
+
+The releases below the rename were published under the name `@spacemansh/anti-slop`.
+That name is deprecated. Install `antislop-plugin` instead.
+
+## 0.1.0
+
+### Minor Changes
+
+- Rename the package from `@spacemansh/anti-slop` to `antislop-plugin` and restart the version. Install and import specifiers change. Rule names, the `antiSlopConfig` exports, and the `anti-slop` and `anti-slop-effect` namespaces do not change, so existing lint configuration needs no edits.
 
 ## 0.3.0
 
