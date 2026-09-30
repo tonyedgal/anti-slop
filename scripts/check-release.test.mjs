@@ -69,6 +69,42 @@ test("skill-only changes require a changeset and advance the shared version", ()
   assert.equal(git("show", `${tag}:skills/SKILL.md`), "Updated skill");
 });
 
+test("an empty changeset satisfies the gate and leaves the version unchanged", () => {
+  const cwd = mkdtempSync(join(tmpdir(), "anti-slop-empty-release-"));
+  mkdirSync(join(cwd, ".changeset"));
+  mkdirSync(join(cwd, "skills"));
+  writeFileSync(
+    join(cwd, "package.json"),
+    JSON.stringify({ name: "antislop-plugin", version: "0.1.0" }),
+  );
+  writeFileSync(
+    join(cwd, ".changeset/config.json"),
+    readFileSync(join(root, ".changeset/config.json")),
+  );
+  writeFileSync(join(cwd, "skills/SKILL.md"), "Original skill\n");
+
+  const git = (...args) =>
+    run(cwd, "git", [
+      "-c",
+      "user.name=Release Test",
+      "-c",
+      "user.email=test@example.invalid",
+      ...args,
+    ]);
+
+  git("init", "-b", "main");
+  git("add", ".");
+  git("commit", "-m", "baseline");
+  const base = git("rev-parse", "HEAD");
+  writeFileSync(join(cwd, "skills/SKILL.md"), "Updated skill\n");
+  writeFileSync(join(cwd, ".changeset/empty.md"), "---\n---\n");
+  git("add", ".");
+  git("commit", "-m", "rename and reset the version");
+  run(cwd, process.execPath, [join(root, "scripts/check-changeset.mjs"), base]);
+  run(cwd, join(root, "node_modules/.bin/changeset"), ["version"]);
+  assert.equal(JSON.parse(readFileSync(join(cwd, "package.json"), "utf8")).version, "0.1.0");
+});
+
 test("contributor documentation alone does not require a release", () => {
   const cwd = mkdtempSync(join(tmpdir(), "anti-slop-docs-"));
 
