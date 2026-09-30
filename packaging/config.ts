@@ -1,6 +1,6 @@
 /** Generic upstream policy. Consumer rule overrides belong after this map. */
 export const antiSlopConfig = {
-  jsPlugins: [{ name: "anti-slop", specifier: "@spacemansh/anti-slop" }],
+  jsPlugins: [{ name: "anti-slop", specifier: "antislop-plugin" }],
   rules: {
     "oxc/no-accumulating-spread": "error",
     "anti-slop/no-array-filter-map": "error",
@@ -26,7 +26,7 @@ export const antiSlopConfig = {
 
 /** Add this configuration only when the project opts into Effect policy. */
 export const antiSlopEffectConfig = {
-  jsPlugins: [{ name: "anti-slop-effect", specifier: "@spacemansh/anti-slop/effect" }],
+  jsPlugins: [{ name: "anti-slop-effect", specifier: "antislop-plugin/effect" }],
   rules: {
     "anti-slop-effect/no-manual-effect-error-tag": "error",
     "anti-slop-effect/no-manual-tag-comparison": "error",

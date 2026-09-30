@@ -30,7 +30,7 @@ for (const group of packed.plan) {
   for (const release of group) {
     if (release.kind !== "publish") continue;
 
-    assert.equal(release.name, "@spacemansh/anti-slop");
+    assert.equal(release.name, "antislop-plugin");
     const tarball = resolve(".release/packed", release.tarball.path);
     run(process.execPath, ["scripts/check-package.mjs", tarball]);
     const integrity = `sha256-${createHash("sha256").update(readFileSync(tarball)).digest("base64")}`;

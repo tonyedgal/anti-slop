@@ -9,7 +9,7 @@ const configs: Record<string, Linter.Config> = {};
 
 const plugin: Omit<ESLint.Plugin, "configs"> & { configs: Record<string, Linter.Config> } =
   Object.assign(withPositions(generic), {
-    meta: { name: "@spacemansh/anti-slop", namespace: "anti-slop" },
+    meta: { name: "antislop-plugin", namespace: "anti-slop" },
     configs,
   });
 
