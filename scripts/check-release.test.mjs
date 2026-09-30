@@ -22,7 +22,7 @@ test("skill-only changes require a changeset and advance the shared version", ()
   mkdirSync(join(cwd, "skills"));
   writeFileSync(
     join(cwd, "package.json"),
-    JSON.stringify({ name: "@spacemansh/anti-slop", version: "0.1.2" }),
+    JSON.stringify({ name: "antislop-plugin", version: "0.1.2" }),
   );
   writeFileSync(
     join(cwd, ".changeset/config.json"),
@@ -52,7 +52,7 @@ test("skill-only changes require a changeset and advance the shared version", ()
   run(cwd, process.execPath, [join(root, "scripts/check-changeset.mjs"), base], 1);
   writeFileSync(
     join(cwd, ".changeset/skill.md"),
-    '---\n"@spacemansh/anti-slop": patch\n---\n\nUpdate the skill.\n',
+    '---\n"antislop-plugin": patch\n---\n\nUpdate the skill.\n',
   );
   git("add", ".");
   git("commit", "-m", "add changeset");
