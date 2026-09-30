@@ -1,6 +1,6 @@
 {
-  "name": "@spacemansh/anti-slop",
-  "version": "0.3.0",
+  "name": "antislop-plugin",
+  "version": "0.1.0",
   "description": "Opinionated Oxlint and ESLint rules that reject low-evidence TypeScript and JavaScript patterns.",
   "keywords": [
     "eslint",

@@ -35,7 +35,7 @@ if (!process.argv[2]) {
 
 const tarball = process.argv[2]
   ? resolve(process.argv[2])
-  : join(output, `spacemansh-anti-slop-${manifest.version}.tgz`);
+  : join(output, `antislop-plugin-${manifest.version}.tgz`);
 
 const entries = run("tar", ["-tzf", tarball], root).trim().split("\n");
 
@@ -105,9 +105,9 @@ for (const manager of ["pnpm", "npm"]) {
     join(consumer, "exports.mjs"),
     `
 import assert from "node:assert/strict";
-import generic from "@spacemansh/anti-slop";
-import effect from "@spacemansh/anti-slop/effect";
-import { antiSlopConfig, antiSlopEffectConfig } from "@spacemansh/anti-slop/config";
+import generic from "antislop-plugin";
+import effect from "antislop-plugin/effect";
+import { antiSlopConfig, antiSlopEffectConfig } from "antislop-plugin/config";
 assert.equal(generic.meta.name, "anti-slop");
 assert.equal(effect.meta.name, "anti-slop-effect");
 assert.deepEqual(Object.keys(generic.rules).sort(), ${JSON.stringify(genericRules)});
@@ -116,14 +116,14 @@ assert.deepEqual(Object.keys(antiSlopConfig.rules).sort(), [...Object.keys(gener
 assert.deepEqual(Object.keys(antiSlopEffectConfig.rules).sort(), Object.keys(effect.rules).map(name => "anti-slop-effect/" + name).sort());
 assert(Object.values(antiSlopConfig.rules).every(value => value === "error"));
 assert(Object.values(antiSlopEffectConfig.rules).every(value => value === "error"));
-await assert.rejects(import("@spacemansh/anti-slop/src/index.ts"), { code: "ERR_PACKAGE_PATH_NOT_EXPORTED" });
+await assert.rejects(import("antislop-plugin/src/index.ts"), { code: "ERR_PACKAGE_PATH_NOT_EXPORTED" });
 `,
   );
   run(process.execPath, ["exports.mjs"], consumer);
   writeFileSync(
     join(consumer, "oxlint.config.ts"),
     `import { defineConfig } from "oxlint";
-import { antiSlopConfig } from "@spacemansh/anti-slop/config";
+import { antiSlopConfig } from "antislop-plugin/config";
 export default defineConfig({ ...antiSlopConfig });\n`,
   );
   writeFileSync(join(consumer, "valid.ts"), "export const value = 1;\n");
@@ -133,7 +133,7 @@ export default defineConfig({ ...antiSlopConfig });\n`,
   writeFileSync(
     join(consumer, "oxlint.config.ts"),
     `import { defineConfig } from "oxlint";
-import { antiSlopConfig, antiSlopEffectConfig } from "@spacemansh/anti-slop/config";
+import { antiSlopConfig, antiSlopEffectConfig } from "antislop-plugin/config";
 export default defineConfig({
   jsPlugins: [...antiSlopConfig.jsPlugins, ...antiSlopEffectConfig.jsPlugins],
   rules: { ...antiSlopConfig.rules, ...antiSlopEffectConfig.rules, "anti-slop/no-reflect-get": "off" },
@@ -161,16 +161,16 @@ export default defineConfig({
   writeFileSync(
     join(consumer, "manual.json"),
     JSON.stringify({
-      jsPlugins: [{ name: "anti-slop", specifier: "@spacemansh/anti-slop" }],
+      jsPlugins: [{ name: "anti-slop", specifier: "antislop-plugin" }],
       rules: { "anti-slop/no-reflect-get": "error" },
     }),
   );
   assert.match(lintError("--config", "manual.json", "invalid.ts"), /no-reflect-get/);
   writeFileSync(
     join(consumer, "consumer.mts"),
-    `import generic from "@spacemansh/anti-slop";
-import effect from "@spacemansh/anti-slop/effect";
-import { antiSlopConfig, antiSlopEffectConfig } from "@spacemansh/anti-slop/config";
+    `import generic from "antislop-plugin";
+import effect from "antislop-plugin/effect";
+import { antiSlopConfig, antiSlopEffectConfig } from "antislop-plugin/config";
 import { defineConfig } from "oxlint";
 defineConfig({ ...antiSlopConfig, rules: { ...antiSlopConfig.rules, "anti-slop/no-reflect-get": "off" } });
 defineConfig(antiSlopEffectConfig);
@@ -249,8 +249,8 @@ writeFileSync(
   `import assert from "node:assert/strict";
 import { ESLint } from "eslint";
 import tsParser from "@typescript-eslint/parser";
-import generic, { all as genericAll } from "@spacemansh/anti-slop/eslint";
-import effect, { all as effectAll } from "@spacemansh/anti-slop/eslint/effect";
+import generic, { all as genericAll } from "antislop-plugin/eslint";
+import effect, { all as effectAll } from "antislop-plugin/eslint/effect";
 
 assert.equal(Object.keys(generic.rules).length, 18);
 assert.equal(Object.keys(effect.rules).length, 5);
@@ -288,8 +288,8 @@ writeFileSync(
   join(eslintConsumer, "consumer.mts"),
   `import { defineConfig } from "eslint/config";
 import tsParser from "@typescript-eslint/parser";
-import generic, { all as genericAll } from "@spacemansh/anti-slop/eslint";
-import effect, { all as effectAll } from "@spacemansh/anti-slop/eslint/effect";
+import generic, { all as genericAll } from "antislop-plugin/eslint";
+import effect, { all as effectAll } from "antislop-plugin/eslint/effect";
 
 defineConfig({ files: ["**/*.ts"], languageOptions: { parser: tsParser }, ...genericAll });
 defineConfig({
@@ -352,8 +352,8 @@ run(
 writeFileSync(
   join(eslint10Consumer, "consumer.mts"),
   `import { defineConfig } from "eslint/config";
-import generic, { all as genericAll } from "@spacemansh/anti-slop/eslint";
-import effect, { all as effectAll } from "@spacemansh/anti-slop/eslint/effect";
+import generic, { all as genericAll } from "antislop-plugin/eslint";
+import effect, { all as effectAll } from "antislop-plugin/eslint/effect";
 
 defineConfig(genericAll);
 defineConfig(generic.configs.all);
@@ -387,9 +387,6 @@ console.log(`ESLint 10 typed consumer passed: ${eslint10Consumer}`);
 
 const checksum = createHash("sha256").update(readFileSync(tarball)).digest("hex");
 
-writeFileSync(
-  join(output, "SHA256SUMS"),
-  `${checksum}  spacemansh-anti-slop-${manifest.version}.tgz\n`,
-);
+writeFileSync(join(output, "SHA256SUMS"), `${checksum}  antislop-plugin-${manifest.version}.tgz\n`);
 
 console.log(`Verified ${tarball}\nSHA256 ${checksum}`);

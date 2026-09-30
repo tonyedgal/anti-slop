@@ -28,7 +28,7 @@ if (shipped) {
 
   const valid = changesets.some((path) => {
     try {
-      return /^---\r?\n[\s\S]*?["']?@spacemansh\/anti-slop["']?:\s*(patch|minor|major)\s*\r?\n[\s\S]*?---/m.test(
+      return /^---\r?\n[\s\S]*?["']?antislop-plugin["']?:\s*(patch|minor|major)\s*\r?\n[\s\S]*?---/m.test(
         readFileSync(path, "utf8"),
       );
     } catch (cause) {
@@ -38,5 +38,5 @@ if (shipped) {
     }
   });
 
-  assert(valid, "Shipped package or skill changes require an @spacemansh/anti-slop changeset.");
+  assert(valid, "Shipped package or skill changes require an antislop-plugin changeset.");
 }
