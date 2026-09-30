@@ -9,14 +9,14 @@ Upstream recommends vendoring so teams can change and maintain their own rules. 
 Requires Node 22.18.0 or newer. The package exports ESM only.
 
 ```sh
-npm install --save-dev @spacemansh/anti-slop oxlint @oxlint/plugins
+npm install --save-dev antislop-plugin oxlint @oxlint/plugins
 ```
 
 Add `oxlint.config.ts`:
 
 ```ts
 import { defineConfig } from "oxlint";
-import { antiSlopConfig } from "@spacemansh/anti-slop/config";
+import { antiSlopConfig } from "antislop-plugin/config";
 
 export default defineConfig(antiSlopConfig);
 ```
@@ -27,7 +27,7 @@ Run `npx oxlint .`. The shared configuration enables all 18 generic rules and th
 
 ```ts
 import { defineConfig } from "oxlint";
-import { antiSlopConfig } from "@spacemansh/anti-slop/config";
+import { antiSlopConfig } from "antislop-plugin/config";
 
 export default defineConfig({
   ...antiSlopConfig,
@@ -44,7 +44,7 @@ When adding the preset to existing configuration, merge `jsPlugins` arrays and `
 
 ```ts
 import { defineConfig } from "oxlint";
-import { antiSlopConfig, antiSlopEffectConfig } from "@spacemansh/anti-slop/config";
+import { antiSlopConfig, antiSlopEffectConfig } from "antislop-plugin/config";
 
 export default defineConfig({
   jsPlugins: [...antiSlopConfig.jsPlugins, ...antiSlopEffectConfig.jsPlugins],
@@ -56,21 +56,21 @@ This enables the five Effect rules in addition to the generic rules.
 
 ## JSON configuration
 
-Register `{ "name": "anti-slop", "specifier": "@spacemansh/anti-slop" }` under `jsPlugins`. Copy the generic rule map from the [manual installation instructions](../README.md#manual-local-installation).
+Register `{ "name": "anti-slop", "specifier": "antislop-plugin" }` under `jsPlugins`. Copy the generic rule map from the [manual installation instructions](../README.md#manual-local-installation).
 
-The optional Effect specifier is `@spacemansh/anti-slop/effect`. Registering a plugin alone does not enable its rules. JSON configuration cannot import the shared JavaScript configuration.
+The optional Effect specifier is `antislop-plugin/effect`. Registering a plugin alone does not enable its rules. JSON configuration cannot import the shared JavaScript configuration.
 
 ## File locations
 
 - `src/`: canonical upstream rules, tests, and plugin entry points.
 - `packaging/`: shared configurations and package-specific checks.
 - `dist/`: generated JavaScript, declarations, and source maps. Run `pnpm build` to generate them.
-- `.release/spacemansh-anti-slop-<version>.tgz`: local tarball produced by `pnpm check:package`.
-- `node_modules/@spacemansh/anti-slop/`: installed package in a consuming project. No rule files are copied into the project's source.
+- `.release/antislop-plugin-<version>.tgz`: local tarball produced by `pnpm check:package`.
+- `node_modules/antislop-plugin/`: installed package in a consuming project. No rule files are copied into the project's source.
 
-The package exports `@spacemansh/anti-slop`, `@spacemansh/anti-slop/effect`,
-`@spacemansh/anti-slop/config`, `@spacemansh/anti-slop/eslint`, and
-`@spacemansh/anti-slop/eslint/effect` from `dist/`. The [ESLint guide](../docs/ESLINT.md)
+The package exports `antislop-plugin`, `antislop-plugin/effect`,
+`antislop-plugin/config`, `antislop-plugin/eslint`, and
+`antislop-plugin/eslint/effect` from `dist/`. The [ESLint guide](../docs/ESLINT.md)
 shows the ESLint-only installation. The tarball also includes package metadata,
 documentation, the root licence, and the ESLint Stylistic licence and provenance.
 Tests and skill assets are not included.

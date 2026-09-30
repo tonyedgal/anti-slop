@@ -1,4 +1,4 @@
-# @spacemansh/anti-slop
+# antislop-plugin
 
 [![skills.sh](https://skills.sh/b/dmmulroy/anti-slop)](https://skills.sh/dmmulroy/anti-slop)
 
@@ -12,11 +12,13 @@ Requires Node 22.18.0+. Install the package with the linter you use:
 
 ```bash
 # Oxlint
-npm install --save-dev @spacemansh/anti-slop oxlint @oxlint/plugins
+npm install --save-dev antislop-plugin oxlint @oxlint/plugins
 
 # ESLint
-npm install --save-dev @spacemansh/anti-slop eslint @typescript-eslint/parser
+npm install --save-dev antislop-plugin eslint @typescript-eslint/parser
 ```
+
+> Renamed from `@spacemansh/anti-slop`. Replace the package name in your `package.json` and in every import specifier. Rule names such as `anti-slop/no-runtime-typeof` and the `antiSlopConfig` export are unchanged, so your lint configuration needs no edits.
 
 ## Oxlint
 
@@ -24,7 +26,7 @@ Add `oxlint.config.ts`:
 
 ```ts
 import { defineConfig } from "oxlint";
-import { antiSlopConfig } from "@spacemansh/anti-slop/config";
+import { antiSlopConfig } from "antislop-plugin/config";
 
 export default defineConfig(antiSlopConfig);
 ```

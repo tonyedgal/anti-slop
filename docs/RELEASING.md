@@ -1,4 +1,4 @@
-# Releasing @spacemansh/anti-slop
+# Releasing antislop-plugin
 
 Tony Edgal maintains this community npm distribution. Upstream does not own its compatibility or releases. The npm package and repository skill share one release version and tag. Skill distribution stays unchanged.
 
@@ -42,7 +42,7 @@ Versions are independent from upstream. Keep the current version until Changeset
 
 ## One-time publication setup
 
-1. Establish permission to publish `@spacemansh/anti-slop` under the `spacemansh` npm scope.
+1. Confirm `antislop-plugin` is available on npm and establish permission to publish that unscoped name.
 2. Complete npm's first-publication setup if required. This is a separate maintainer action, not part of local verification.
 3. Configure [npm trusted publishing](https://docs.npmjs.com/trusted-publishers/) for GitHub owner `tonyedgal`, repository `anti-slop`, and workflow `release.yml`. Allow direct publishing.
 4. Confirm hosted CI passes before merging the first version pull request.

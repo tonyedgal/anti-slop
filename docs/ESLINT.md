@@ -1,17 +1,17 @@
 # ESLint package
 
-Install ESLint, a TypeScript parser, and `@spacemansh/anti-slop`. Keep the parser
+Install ESLint, a TypeScript parser, and `antislop-plugin`. Keep the parser
 version compatible with the TypeScript version used by the project.
 
 ```sh
-pnpm add -D eslint @typescript-eslint/parser @spacemansh/anti-slop
+pnpm add -D eslint @typescript-eslint/parser antislop-plugin
 ```
 
 Add the 18 generic anti-slop rules to `eslint.config.mjs`:
 
 ```js
 import tsParser from "@typescript-eslint/parser";
-import { all as antiSlop } from "@spacemansh/anti-slop/eslint";
+import { all as antiSlop } from "antislop-plugin/eslint";
 
 export default [
   {
@@ -27,7 +27,7 @@ use this `eslint.config.mjs`:
 
 ```js
 import tsParser from "@typescript-eslint/parser";
-import { all as antiSlop } from "@spacemansh/anti-slop/eslint";
+import { all as antiSlop } from "antislop-plugin/eslint";
 
 export default [
   {
@@ -46,8 +46,8 @@ Projects that use Effect can enable the five additional rules:
 
 ```js
 import tsParser from "@typescript-eslint/parser";
-import { all as antiSlop } from "@spacemansh/anti-slop/eslint";
-import { all as antiSlopEffect } from "@spacemansh/anti-slop/eslint/effect";
+import { all as antiSlop } from "antislop-plugin/eslint";
+import { all as antiSlopEffect } from "antislop-plugin/eslint/effect";
 
 export default [
   {
